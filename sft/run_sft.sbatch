@@ -34,7 +34,7 @@ done
 DATETIME=`date "+%Y%m%d-%H%M"`
 version=r-${lora_rank}_ws-${warmup_steps}_lr-${learning_rate}_min-lr-${min_lr}
 
-# TODO: Add path to the root dir of the GaMS-PEFT-Tuning repository
+# TODO: Add path to the root dir of the GaMS-Translator repository
 WORK_DIR=
 SCRIPT_DIR=$WORK_DIR/sft
 
