@@ -25,12 +25,12 @@ batch_size=$2
 # Either wikipedia or ccnews
 corpus=$3
 
-OUTPUT_DIR=$DATA_DIR/${corpus}_translated/${model}
+OUTPUT_DIR=$DATA_DIR/${model}/${corpus}_translated
 mkdir -p $OUTPUT_DIR
 
-LOG_DIR=$SCRIPT_DIR/logs/${corpus}
+LOG_DIR=$SCRIPT_DIR/logs/${model}
 mkdir -p $LOG_DIR
-LOG_FILE=$LOG_DIR/${model}_translation.txt
+LOG_FILE=$LOG_DIR/${corpus}_translation.txt
 
 srun \
     --cpu-bind=verbose \
