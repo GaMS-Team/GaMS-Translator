@@ -33,8 +33,8 @@ def use_lora(rank=128):
 def run_training(experiment_dir, model_input_path, tokenizer_path, run_name, lora_rank, warmup_steps, learning_rate,
                  min_lr, resume_from_checkpoint=None):
     # Load the datasets from JSONL files
-    train_dataset = load_dataset("json", data_files=f"/data/train.jsonl")["train"]
-    val_dataset = load_dataset("json", data_files=f"/data/val.jsonl")["train"]
+    train_dataset = load_dataset("json", data_files=f"/data/training.jsonl")["train"]
+    val_dataset = load_dataset("json", data_files=f"/data/validation.jsonl")["train"]
     MAX_LENGTH = 8192
 
     # Load tokenizer
