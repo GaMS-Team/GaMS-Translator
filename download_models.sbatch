@@ -55,7 +55,7 @@ BINDS=$MODELS_DIR:/models,$REWARD_MODELS_DIR:/reward_models,$HF_CACHE_DIR:/hf_ca
 # On containers with huggingface_hub < 0.34 the CLI is called `huggingface-cli`
 # instead of `hf`; replace `hf download` with `huggingface-cli download` below.
 
-echo "===== 1/3 Downloading cjvt/GaMS3-12B ====="
+echo "===== 1/4 Downloading cjvt/GaMS3-12B ====="
 srun \
   --cpu-bind=verbose \
   singularity exec \
@@ -64,7 +64,20 @@ srun \
     hf download cjvt/GaMS3-12B \
       --local-dir /models/GaMS3-12B
 
-echo "===== 2/3 Downloading Unbabel/wmt22-cometkiwi-da ====="
+# Only the tokenizer files are needed from the Instruct model (it is used as
+# TOKENIZER_PATH in sft/run_sft.sbatch for its chat template), so --include
+# restricts the download to those and skips the model weights entirely.
+echo "===== 2/4 Downloading cjvt/GaMS3-12B-Instruct tokenizer ====="
+srun \
+  --cpu-bind=verbose \
+  singularity exec \
+    -B $BINDS \
+    $CONTAINER \
+    hf download cjvt/GaMS3-12B-Instruct \
+      --local-dir /models/GaMS3-12B-Instruct \
+      --include "tokenizer*" "special_tokens_map.json" "added_tokens.json" "chat_template*"
+
+echo "===== 3/4 Downloading Unbabel/wmt22-cometkiwi-da ====="
 srun \
   --cpu-bind=verbose \
   singularity exec \
@@ -73,7 +86,7 @@ srun \
     hf download Unbabel/wmt22-cometkiwi-da \
       --local-dir /reward_models/wmt22-cometkiwi-da
 
-echo "===== 3/3 Downloading fasttext LID model ====="
+echo "===== 4/4 Downloading fasttext LID model ====="
 cd $REWARD_MODELS_DIR
 wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
 
