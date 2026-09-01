@@ -37,10 +37,11 @@ version=r-${lora_rank}_ws-${warmup_steps}_lr-${learning_rate}_min-lr-${min_lr}
 # TODO: Add path to the root dir of the GaMS-Translator repository
 WORK_DIR=
 SCRIPT_DIR=$WORK_DIR/sft
+MODELS_DIR=$WORK_DIR/models
 
 # Model path and tokenizer paths can also be local paths (in that case you should mount them into the container)
-MODEL_INPUT_PATH=cjvt/GaMS3-12B
-TOKENIZER_PATH=cjvt/GaMS3-12B-Instruct
+MODEL_INPUT_PATH=/models/GaMS3-12B
+TOKENIZER_PATH=/models/GaMS3-12B-Instruct
 
 # data
 DATA_DIR=$WORK_DIR/data/sft_training
@@ -145,6 +146,6 @@ srun \
   --output="${EXPERIMENTS_DIR}/${RUN_NAME}.txt" \
   singularity exec \
     --nv \
-    -B ${EXPERIMENTS_DIR}:/experiments,${DATA_DIR}:/data,${SCRIPT_DIR}:/script,${OUTPUT_DIR}:/output \
+    -B ${MODELS_DIR}:/models,${EXPERIMENTS_DIR}:/experiments,${DATA_DIR}:/data,${SCRIPT_DIR}:/script,${OUTPUT_DIR}:/output \
     ${CONTAINER_DIR}/${CONTAINER_FILENAME} \
     /experiments/${RUN_NAME}.sh
