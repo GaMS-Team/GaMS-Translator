@@ -36,7 +36,7 @@ def run_training(experiment_dir, model_input_path, tokenizer_path, run_name, lor
     train_dataset = load_dataset("json", data_files=f"/data/training.jsonl")["train"]
     val_dataset = load_dataset("json", data_files=f"/data/validation.jsonl")["train"]
     # Maximum length of the whole sequence (prompt + completion)
-    MAX_LENGTH = 16384
+    MAX_LENGTH = 8192
 
     # Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
