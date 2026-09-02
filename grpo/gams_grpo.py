@@ -7,7 +7,20 @@ import torch
 from argparse import ArgumentParser
 import os
 
-from reward_functions import bleu_score, comet_score, language_score, length_score
+from reward_functions import PROMPT_TEMPLATE, bleu_score, comet_score, language_score, length_score
+
+
+def has_expected_instruction(example):
+    """Checks that the example's prompt starts with PROMPT_TEMPLATE.
+
+    extract_src in reward_functions.py recovers the English source by stripping
+    exactly that instruction. An example carrying a different instruction would
+    keep it inside its source text and skew the COMET and length rewards, so such
+    examples are dropped instead.
+    """
+    prompt = example["prompt"]
+
+    return bool(prompt) and prompt[0]["content"].startswith(PROMPT_TEMPLATE)
 
 
 def use_lora(rank=128):
@@ -34,9 +47,22 @@ def use_lora(rank=128):
 
 def run_training(experiment_dir, model_input_path, tokenizer_path, run_name, lora_rank, warmup_steps, learning_rate,
                  min_lr, grpo_beta, vllm_url, resume_from_checkpoint=None):
-    # Load the datasets from JSONL files
-    train_dataset = load_dataset("json", data_files=f"/data/training.jsonl")["train"]
-    val_dataset = load_dataset("json", data_files=f"/data/validation.jsonl")["train"]
+    # Load the datasets from the parquet shards of cjvt/GaMS-Translator-GRPO-Training.
+    # Globs are used so the dataset can be re-sharded without touching this script.
+    dataset = load_dataset(
+        "parquet",
+        data_files={
+            "training": "/data/training-*.parquet",
+            "validation": "/data/validation-*.parquet",
+        }
+    )
+
+    # Keep only the examples whose prompt uses PROMPT_TEMPLATE
+    raw_sizes = {split: len(split_dataset) for split, split_dataset in dataset.items()}
+    dataset = dataset.filter(has_expected_instruction)
+
+    train_dataset = dataset["training"]
+    val_dataset = dataset["validation"]
     MAX_PROMPT_LENGTH = 4096
     MAX_COMPLETION_LENGTH = 4096
 
@@ -67,8 +93,10 @@ def run_training(experiment_dir, model_input_path, tokenizer_path, run_name, lor
 
     # Print only on rank 0
     if process_rank == 0:
-        print("Train data size:", len(train_dataset))
-        print("Val data size:", len(val_dataset))
+        print("Train data size:", len(train_dataset),
+              f"(dropped {raw_sizes['training'] - len(train_dataset)} with unexpected instruction)")
+        print("Val data size:", len(val_dataset),
+              f"(dropped {raw_sizes['validation'] - len(val_dataset)} with unexpected instruction)")
         print("Micro batch size:", micro_batch_size)
         print("Effective batch size:", batch_size)
         print("Gradient accumulation steps:", gradient_accumulation_steps)

@@ -56,9 +56,10 @@ TOKENIZER_PATH=/model_input_path
 #   /reward_models/lid.176.bin
 REWARD_MODELS_DIR=$WORK_DIR/translation_reward_models
 
-# data
-# TODO: Point this at the dir with training.jsonl + validation.jsonl for GRPO
-DATA_DIR=$WORK_DIR/data/grpo_training
+# data: the parquet shards of cjvt/GaMS-Translator-GRPO-Training, fetched by
+# download_models.sbatch. The dataset repo keeps them under data/, so the inner
+# dir is bound as /data and gams_grpo.py reads /data/{training,validation}-*.parquet
+DATA_DIR=$WORK_DIR/data/grpo_training/data
 
 # container
 CONTAINER_DIR=$WORK_DIR/singularity
