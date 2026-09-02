@@ -9,7 +9,7 @@
 #SBATCH --mem=64G
 #SBATCH --output=/dev/null
 
-# TODO: Add path to the root dir of the GaMS-PEFT-Tuning repository
+# TODO: Add path to the root dir of the GaMS-Translator repository
 WORK_DIR=
 
 CONTAINER_DIR=$WORK_DIR/singularity
@@ -20,7 +20,7 @@ SCRIPT_DIR=$WORK_DIR/merge_lora
 
 base_model_path=$1
 tokenizer_path=$2
-# Either sft, dpo or grpo
+# Either sft, dpo/training or grpo
 training_dir=$3
 adapter_checkpoint=$4
 output_name=$5
