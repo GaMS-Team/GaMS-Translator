@@ -64,7 +64,7 @@ def run_training(experiment_dir, model_input_path, tokenizer_path, run_name, lor
         print("Learning rate:", learning_rate)
         print("Min learning rate:", min_lr)
 
-    num_epochs = 1
+    num_epochs = 3
     steps_per_epoch = len(train_dataset) // batch_size
     eval_steps = int(1 / 2 * steps_per_epoch)  # Evaluate 2 times per epoch
     save_steps = int(1 / 2 * steps_per_epoch)  # Save 2 times per epoch
