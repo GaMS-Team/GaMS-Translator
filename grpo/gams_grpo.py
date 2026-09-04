@@ -282,25 +282,25 @@ def parse_args():
     parser.add_argument(
         "--lora_rank",
         type=int,
-        default=64,
+        default=128,
         help="Rank of the LoRA updates"
     )
     parser.add_argument(
         "--warmup_steps",
         type=int,
-        default=100,
+        default=1000,
         help="Number of warmup steps"
     )
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=2e-5,
+        default=5e-6,
         help="Learning rate"
     )
     parser.add_argument(
         "--min_lr",
         type=float,
-        default=1e-6,
+        default=5e-7,
         help="Minimum learning rate"
     )
     parser.add_argument(
