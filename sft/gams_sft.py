@@ -207,13 +207,13 @@ def parse_args():
     parser.add_argument(
         "--lora_rank",
         type=int,
-        default=64,
+        default=128,
         help="Rank of the LoRA updates"
     )
     parser.add_argument(
         "--warmup_steps",
         type=int,
-        default=500,
+        default=200,
         help="Number of warmup steps"
     )
     parser.add_argument(
