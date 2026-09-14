@@ -29,11 +29,11 @@ ADAPTER_PATH=$WORK_DIR/$training_dir/experiments/$adapter_checkpoint
 
 mkdir -p $SCRIPT_DIR/logs
 
-# run with apptainer
+# run with singularity
 srun \
   --cpu-bind=verbose \
   --output=$SCRIPT_DIR/logs/"${output_name}.txt" \
-  apptainer exec \
+  singularity exec \
     --nv \
     -B $MODELS_DIR:/models,$ADAPTER_PATH:/adapter_input_path,$SCRIPT_DIR:/script \
     $CONTAINER \
